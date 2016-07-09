@@ -1,0 +1,1026 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="前言flow layout， 流式布局， 这个概念在移动端或者前端开发中很常见，特别是在多标签的展示中， 往往起到了关键的作用。然而Android 官方， 并没有为开发者提供这样一个布局， 于是有很多开发者自己做了这样的工作，github上也出现了很多自定义FlowLayout。 最近， 我也实现了这样一个FlowLayout，自己感觉可能是当前最好用的FlowLayout了（捂脸），在这里做一下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Android】自定义FlowLayout，支持多种布局优化--android-flowlayout">
+<meta property="og:url" content="http://lankton.github.io/2016/07/09/【Android】自定义FlowLayout，支持多种布局优化-android-flowlayout/index.html">
+<meta property="og:site_name" content="Lan‘s blog">
+<meta property="og:description" content="前言flow layout， 流式布局， 这个概念在移动端或者前端开发中很常见，特别是在多标签的展示中， 往往起到了关键的作用。然而Android 官方， 并没有为开发者提供这样一个布局， 于是有很多开发者自己做了这样的工作，github上也出现了很多自定义FlowLayout。 最近， 我也实现了这样一个FlowLayout，自己感觉可能是当前最好用的FlowLayout了（捂脸），在这里做一下">
+<meta property="og:image" content="http://img.blog.csdn.net/20160421000717399">
+<meta property="og:image" content="http://img.blog.csdn.net/20160421000756789">
+<meta property="og:image" content="http://img.blog.csdn.net/20160421001353635">
+<meta property="og:image" content="http://img.blog.csdn.net/20160520234814688">
+<meta property="og:image" content="http://img.blog.csdn.net/20160421021509145">
+<meta property="og:updated_time" content="2016-07-09T15:19:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Android】自定义FlowLayout，支持多种布局优化--android-flowlayout">
+<meta name="twitter:description" content="前言flow layout， 流式布局， 这个概念在移动端或者前端开发中很常见，特别是在多标签的展示中， 往往起到了关键的作用。然而Android 官方， 并没有为开发者提供这样一个布局， 于是有很多开发者自己做了这样的工作，github上也出现了很多自定义FlowLayout。 最近， 我也实现了这样一个FlowLayout，自己感觉可能是当前最好用的FlowLayout了（捂脸），在这里做一下">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160421000717399">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://lankton.github.io/2016/07/09/【Android】自定义FlowLayout，支持多种布局优化-android-flowlayout/"/>
+
+  <title> 【Android】自定义FlowLayout，支持多种布局优化--android-flowlayout | Lan‘s blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lan‘s blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【Android】自定义FlowLayout，支持多种布局优化--android-flowlayout
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-09T22:11:58+08:00" content="2016-07-09">
+              2016-07-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Lan-s-tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Lan's tech</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/09/【Android】自定义FlowLayout，支持多种布局优化-android-flowlayout/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/09/【Android】自定义FlowLayout，支持多种布局优化-android-flowlayout/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/09/【Android】自定义FlowLayout，支持多种布局优化-android-flowlayout/" class="leancloud_visitors" data-flag-title="【Android】自定义FlowLayout，支持多种布局优化--android-flowlayout">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>flow layout， 流式布局， 这个概念在移动端或者前端开发中很常见，特别是在多标签的展示中， 往往起到了关键的作用。然而Android 官方， 并没有为开发者提供这样一个布局， 于是有很多开发者自己做了这样的工作，github上也出现了很多自定义FlowLayout。 最近， 我也实现了这样一个FlowLayout，自己感觉可能是当前最好用的FlowLayout了（捂脸），在这里做一下分享。<br>项目地址：<a href="https://github.com/lankton/android-flowlayout" target="_blank" rel="external">https://github.com/lankton/android-flowlayout</a></p>
+<h1 id="展示"><a href="#展示" class="headerlink" title="展示"></a>展示</h1><p><img src="http://img.blog.csdn.net/20160421000717399" width="250px"> <img src="http://img.blog.csdn.net/20160421000756789" width="250px"> <img src="http://img.blog.csdn.net/20160421001353635" width="250px"><br>第一张图， 展示<strong>向FlowLayout中不断添加子View</strong><br>第二张图， 展示<strong>压缩子View， 使他们尽可能充分利用空间</strong><br>第三张图， 展示<strong>调整子View之间间隔， 使各行左右对齐</strong></p>
+<p> <img src="http://img.blog.csdn.net/20160520234814688" width="250px"><br> 这张图，截断flowlayout到指定行数。－－20160520更新。</p>
+<p> ##基本的流式布局功能##<br>在布局文件中使用FlowLayout即可：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">cn.lankton.flowlayout.FlowLayout</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/flowlayout"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:padding</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">app:lineSpacing</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"#F0F0F0"</span>&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">cn.lankton.flowlayout.FlowLayout</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>可以看到， 提供了一个自定义参数<strong>lineSpacing</strong>， 来控制行与行之间的间距。</p>
+<h2 id="压缩"><a href="#压缩" class="headerlink" title="压缩"></a>压缩</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">flowLayout.relayoutToCompress();</div></pre></td></tr></table></figure>
+<p>压缩的方式， 是通过对子View重新排序， 使得它们能够更合理的挤占空间， 后面会做详细说明。</p>
+<h2 id="对齐"><a href="#对齐" class="headerlink" title="对齐"></a>对齐</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">flowLayout.relayoutToAlign();</div></pre></td></tr></table></figure>
+<p>对齐， 不会改变子View的顺序， 也不会起到压缩的作用。</p>
+<h2 id="截断"><a href="#截断" class="headerlink" title="截断"></a>截断</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">flowLayout.specifyLines(<span class="keyword">int</span>)</div></pre></td></tr></table></figure>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h2 id="流式布局的实现"><a href="#流式布局的实现" class="headerlink" title="流式布局的实现"></a>流式布局的实现</h2><h3 id="重写generateLayoutParams方法"><a href="#重写generateLayoutParams方法" class="headerlink" title="重写generateLayoutParams方法"></a>重写generateLayoutParams方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> LayoutParams <span class="title">generateLayoutParams</span><span class="params">(LayoutParams p)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MarginLayoutParams(p);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> LayoutParams <span class="title">generateLayoutParams</span><span class="params">(AttributeSet attrs)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MarginLayoutParams(getContext(), attrs);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>重写该方法的2种重载是有必要的。这样子元素的LayoutParams就是MarginLayoutParam， 包含了margin 属性， 正是我们需要的。</p>
+<h3 id="重写onMeasure"><a href="#重写onMeasure" class="headerlink" title="重写onMeasure"></a>重写onMeasure</h3><p>主要有2个目的， 第一是测量每个子元素的宽高， 第二是根据子元素的测量值， 设置的FlowLayout的测量值。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> mPaddingLeft = getPaddingLeft();</div><div class="line">    <span class="keyword">int</span> mPaddingRight = getPaddingRight();</div><div class="line">    <span class="keyword">int</span> mPaddingTop = getPaddingTop();</div><div class="line">    <span class="keyword">int</span> mPaddingBottom = getPaddingBottom();</div><div class="line"></div><div class="line">    <span class="keyword">int</span> widthSize = MeasureSpec.getSize(widthMeasureSpec);</div><div class="line">    <span class="keyword">int</span> heightMode = MeasureSpec.getMode(heightMeasureSpec);</div><div class="line">    <span class="keyword">int</span> heightSize = MeasureSpec.getSize(heightMeasureSpec);</div><div class="line">    <span class="keyword">int</span> lineUsed = mPaddingLeft + mPaddingRight;</div><div class="line">    <span class="keyword">int</span> lineY = mPaddingTop;</div><div class="line">    <span class="keyword">int</span> lineHeight = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.getChildCount(); i++) &#123;</div><div class="line">        View child = <span class="keyword">this</span>.getChildAt(i);</div><div class="line">        <span class="keyword">if</span> (child.getVisibility() == GONE) &#123;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        measureChildWithMargins(child, widthMeasureSpec, <span class="number">0</span>, heightMeasureSpec, lineY);</div><div class="line">        MarginLayoutParams mlp = (MarginLayoutParams) child.getLayoutParams();</div><div class="line">        <span class="keyword">int</span> childWidth = child.getMeasuredWidth();</div><div class="line">        <span class="keyword">int</span> childHeight = child.getMeasuredHeight();</div><div class="line">        <span class="keyword">int</span> spaceWidth = mlp.leftMargin + childWidth + mlp.rightMargin;</div><div class="line">        <span class="keyword">int</span> spaceHeight = mlp.topMargin + childHeight + mlp.bottomMargin;</div><div class="line">        <span class="keyword">if</span> (lineUsed + spaceWidth &gt; widthSize) &#123;</div><div class="line">            <span class="comment">//approach the limit of width and move to next line</span></div><div class="line">            lineY += lineHeight + lineSpacing;</div><div class="line">            lineUsed = mPaddingLeft + mPaddingRight;</div><div class="line">            lineHeight = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (spaceHeight &gt; lineHeight) &#123;</div><div class="line">            lineHeight = spaceHeight;</div><div class="line">        &#125;</div><div class="line">        lineUsed += spaceWidth;</div><div class="line">    &#125;</div><div class="line">    setMeasuredDimension(</div><div class="line">            widthSize,</div><div class="line">            heightMode == MeasureSpec.EXACTLY ? heightSize : lineY + lineHeight + mPaddingBottom</div><div class="line">    );</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>代码逻辑很简单， 就是遍历子元素， 计算累计长度， 超过一行可容纳宽度， 就将累计长度清0，同时假设继续向下一行放置子元素。为什么是假设呢， 因为真正在FlowLayout中放置子元素的过程， 是在onLayout方法中的。<br>重点在最后的setMeasuredDimension方法。在日常使用FlowLayout中， 我们的宽度往往是固定值， 或者match_parent,  不需要根据内容而改变， 所以宽度值直接用widthSize， 即从传进来的测量值获得的宽度。<br>高度则根据MeasureSpec的mode来判断， EXACTLY意味着和宽度一样， 直接用测量值的宽度即可， 否则，则是wrap_content， 需要用子元素排布出来的高度进行判断。</p>
+<h3 id="重写onLayout"><a href="#重写onLayout" class="headerlink" title="重写onLayout"></a>重写onLayout</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLayout</span><span class="params">(<span class="keyword">boolean</span> changed, <span class="keyword">int</span> l, <span class="keyword">int</span> t, <span class="keyword">int</span> r, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> mPaddingLeft = getPaddingLeft();</div><div class="line">    <span class="keyword">int</span> mPaddingRight = getPaddingRight();</div><div class="line">    <span class="keyword">int</span> mPaddingTop = getPaddingTop();</div><div class="line"></div><div class="line">    <span class="keyword">int</span> lineX = mPaddingLeft;</div><div class="line">    <span class="keyword">int</span> lineY = mPaddingTop;</div><div class="line">    <span class="keyword">int</span> lineWidth = r - l;</div><div class="line">    usefulWidth = lineWidth - mPaddingLeft - mPaddingRight;</div><div class="line">    <span class="keyword">int</span> lineUsed = mPaddingLeft + mPaddingRight;</div><div class="line">    <span class="keyword">int</span> lineHeight = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.getChildCount(); i++) &#123;</div><div class="line">        View child = <span class="keyword">this</span>.getChildAt(i);</div><div class="line">        <span class="keyword">if</span> (child.getVisibility() == GONE) &#123;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        MarginLayoutParams mlp = (MarginLayoutParams) child.getLayoutParams();</div><div class="line">        <span class="keyword">int</span> childWidth = child.getMeasuredWidth();</div><div class="line">        <span class="keyword">int</span> childHeight = child.getMeasuredHeight();</div><div class="line">        <span class="keyword">int</span> spaceWidth = mlp.leftMargin + childWidth + mlp.rightMargin;</div><div class="line">        <span class="keyword">int</span> spaceHeight = mlp.topMargin + childHeight + mlp.bottomMargin;</div><div class="line">        <span class="keyword">if</span> (lineUsed + spaceWidth &gt; lineWidth) &#123;</div><div class="line">            <span class="comment">//approach the limit of width and move to next line</span></div><div class="line">            lineY += lineHeight + lineSpacing;</div><div class="line">            lineUsed = mPaddingLeft + mPaddingRight;</div><div class="line">            lineX = mPaddingLeft;</div><div class="line">            lineHeight = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">        child.layout(lineX + mlp.leftMargin, lineY + mlp.topMargin, lineX + mlp.leftMargin + childWidth, lineY + mlp.topMargin + childHeight);</div><div class="line">        <span class="keyword">if</span> (spaceHeight &gt; lineHeight) &#123;</div><div class="line">            lineHeight = spaceHeight;</div><div class="line">        &#125;</div><div class="line">        lineUsed += spaceWidth;</div><div class="line">        lineX += spaceWidth;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这段代码也很好理解， 逐个判断子元素，是继续在本行放置， 还是需要换行放置。这一步和onMeasure一样， 基本上所有的FlowLayout都会进行重写， 我的自然也没什么特别的新意， 这两块就不重点介绍了。下面重点介绍一下2种布局优化的实现。</p>
+<h2 id="压缩的实现"><a href="#压缩的实现" class="headerlink" title="压缩的实现"></a>压缩的实现</h2><p>关于如何实现压缩， 这个问题开始的确很让我头疼。因为我的脑子里只有大致的概念，那就是压缩应该是一个什么样的效果， 而这个模糊的概念很难转换成具体的数学模型。没有数学模型， 就无法用代码解决这个问题，简直恨不得回到大学重学算法。。但有一个想法是明确的， 那就是解决这个问题， 实际上就是对子元素的重新排序。<br>后来决定简化思路， 用类似贪心算法的思维解决问题，那就是：逐行解决， 每一行都争取最大程度的占满。</p>
+<ol>
+<li>从第一行开始， 从子元素集合中，选出一部分， 使得这一部分子元素可以最大程度的占据这一行;</li>
+<li>将这部分已经选出的从集合中拿出， 继续对下一行执行第一步操作。<br>这个思路确立了， 那我们如何从集合中选出子集， 对某一行进行最大程度的占据呢？<br>我们已知的条件：</li>
+<li>子元素集合</li>
+<li>每行可容纳宽度</li>
+<li>每个子元素的宽度<br>这个时候， 脑子里就想到了01背包问题：<br>已知</li>
+<li>物品集合</li>
+<li>背包总容量</li>
+<li>每个物品的价值</li>
+<li>每个物品的体积<br>求背包包含物品的最大价值(及其方案<br>有朋友可能有疑问， 二者确实很像， 但不是还差着一个条件吗？嗯 ，是的。。但是<strong>在当前状况下，因为我们要尽可能的占满某一行， 那么每个子元素的宽度就不仅仅是限制了， 也是价值所在。</strong><br>这样， 该状况就完全和01背包问题一致了。之后就可以用<strong>动态规划</strong>解决问题了。 关于如何用动态规划解决01背包问题， 其实我也忘的差不多了， 也是在网上查着资料， 一边回顾，一边实现的。所以这里我自己就不展开介绍了， 也不贴自己的代码了（感兴趣的可以去<a href="https://githitub.com/lankton/android-flowlayout" target="_blank" rel="external">github</a>查看）， 放一个链接。我感觉这个链接里的讲解对我回顾相关知识点帮助很大，有兴趣的也可以看看～<br><a href="http://blog.csdn.net/wumuzi520/article/details/7014559" target="_blank" rel="external"> 背包问题——“01背包”详解及实现（包含背包中具体物品的求解）</a></li>
+</ol>
+<h2 id="对齐的实现"><a href="#对齐的实现" class="headerlink" title="对齐的实现"></a>对齐的实现</h2><p>这个功能，我最早是在bilibili的ipad客户端上看到的，如下。<br><img src="http://img.blog.csdn.net/20160421021509145" width="250px"><br>当时觉得挺好看的，还想过一阵怎么做， 但一时没想出来。。。这次实现FlowLayout， 就顺手将这种对齐样式用自己的想法实现了一下。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">relayoutToAlign</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> childCount = <span class="keyword">this</span>.getChildCount();</div><div class="line">    <span class="keyword">if</span> (<span class="number">0</span> == childCount) &#123;</div><div class="line">        <span class="comment">//no need to sort if flowlayout has no child view</span></div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) &#123;</div><div class="line">        View v = getChildAt(i);</div><div class="line">        <span class="keyword">if</span> (v <span class="keyword">instanceof</span> BlankView) &#123;</div><div class="line">            <span class="comment">//BlankView is just to make childs look in alignment, we should ignore them when we relayout</span></div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        count++;</div><div class="line">    &#125;</div><div class="line">    View[] childs = <span class="keyword">new</span> View[count];</div><div class="line">    <span class="keyword">int</span>[] spaces = <span class="keyword">new</span> <span class="keyword">int</span>[count];</div><div class="line">    <span class="keyword">int</span> n = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) &#123;</div><div class="line">        View v = getChildAt(i);</div><div class="line">        <span class="keyword">if</span> (v <span class="keyword">instanceof</span> BlankView) &#123;</div><div class="line">            <span class="comment">//BlankView is just to make childs look in alignment, we should ignore them when we relayout</span></div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        childs[n] = v;</div><div class="line">        MarginLayoutParams mlp = (MarginLayoutParams) v.getLayoutParams();</div><div class="line">        <span class="keyword">int</span> childWidth = v.getMeasuredWidth();</div><div class="line">        spaces[n] = mlp.leftMargin + childWidth + mlp.rightMargin;</div><div class="line">        n++;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">int</span> lineTotal = <span class="number">0</span>;</div><div class="line">    <span class="keyword">int</span> start = <span class="number">0</span>;</div><div class="line">    <span class="keyword">this</span>.removeAllViews();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</div><div class="line">        <span class="keyword">if</span> (lineTotal + spaces[i] &gt; usefulWidth) &#123;</div><div class="line">            <span class="keyword">int</span> blankWidth = usefulWidth - lineTotal;</div><div class="line">            <span class="keyword">int</span> end = i - <span class="number">1</span>;</div><div class="line">            <span class="keyword">int</span> blankCount = end - start;</div><div class="line">            <span class="keyword">if</span> (blankCount &gt; <span class="number">0</span>) &#123;</div><div class="line">                <span class="keyword">int</span> eachBlankWidth = blankWidth / blankCount;</div><div class="line">                MarginLayoutParams lp = <span class="keyword">new</span> MarginLayoutParams(eachBlankWidth, <span class="number">0</span>);</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = start; j &lt; end; j++) &#123;</div><div class="line">                    <span class="keyword">this</span>.addView(childs[j]);</div><div class="line">                    BlankView blank = <span class="keyword">new</span> BlankView(mContext);</div><div class="line">                    <span class="keyword">this</span>.addView(blank, lp);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">this</span>.addView(childs[end]);</div><div class="line">                start = i;</div><div class="line">                i --;</div><div class="line">                lineTotal = <span class="number">0</span>;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            lineTotal += spaces[i];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = start; i &lt; count; i++) &#123;</div><div class="line">        <span class="keyword">this</span>.addView(childs[i]);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>代码很长， 但说起来很简单。获得子元素列表，从头开始， 逐一判断哪些子元素在同一行。即每一次的start 到 end。 然后计算这些子元素装满一行的话， 还差多少， 设为d。则每两个子元素之间需要补上的间距为 d / (end - start)。 如果设置间距呢， 首先我们肯定不能去更改子元素本身的性质。那么， 就只能在两个子元素中间补上一个宽度为d / (end - start) 的BlankView了。<br>至于这个BlankView是个什么鬼， 定义如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BlankView</span> <span class="keyword">extends</span> <span class="title">View</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BlankView</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>你看， 根本什么也没做。 那我新写一个类继承View的意义是什么呢？ 其实从上边对齐的代码里也能看到，这样我们<strong>在遍历FlowLayout的子元素时， 就可以通过 instance of BlankView 来判断是真正需要处理、计算的子元素，还是我们后来加上的补位View了</strong>。 </p>
+<h2 id="截断的实现"><a href="#截断的实现" class="headerlink" title="截断的实现"></a>截断的实现</h2><p>假设要截断为N行， 则取子元素列表中，前N行的，重新布局。详见<a href="https://github.com/lankton/android-flowlayout" target="_blank" rel="external">github</a>代码。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>代码没有全部贴出， 因为所有的代码都在github上了～这里再贴一下项目地址：<br><a href="https://github.com/lankton/android-flowlayout" target="_blank" rel="external">https://github.com/lankton/android-flowlayout</a></p>
+<p>这个项目， 肯定还是有很多需要优化的地方， 欢迎各位提出各种意见或者建议，也期待能够被大家使用。<br>可以的话，也顺求star～  谢谢。</p>
+<h1 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h1><h2 id="发布到JCenter-20160519"><a href="#发布到JCenter-20160519" class="headerlink" title="发布到JCenter-20160519"></a>发布到JCenter-20160519</h2><p>为方便使用，已将library发布到JCenter，开发者可以使用gradle或者maven进行依赖的配置。</p>
+<h3 id="gradle"><a href="#gradle" class="headerlink" title="gradle"></a>gradle</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile &apos;cn.lankton:flowlayout:1.0.1&apos;</div></pre></td></tr></table></figure>
+<h3 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">  &lt;groupId&gt;cn.lankton&lt;/groupId&gt;</div><div class="line">  &lt;artifactId&gt;flowlayout&lt;/artifactId&gt;</div><div class="line">  &lt;version&gt;1.0.1&lt;/version&gt;</div><div class="line">  &lt;type&gt;pom&lt;/type&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/09/【Android】结合源码解析Android消息队列工作流程/" rel="next" title="【Android】结合源码解析Android消息队列工作流程">
+                <i class="fa fa-chevron-left"></i> 【Android】结合源码解析Android消息队列工作流程
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/09/【Android】自定义LinearLayout实现侧滑布局-SwipeLinearLayout/" rel="prev" title="【Android】自定义LinearLayout实现侧滑布局--SwipeLinearLayout">
+                【Android】自定义LinearLayout实现侧滑布局--SwipeLinearLayout <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/07/09/【Android】自定义FlowLayout，支持多种布局优化-android-flowlayout/"
+     data-title="【Android】自定义FlowLayout，支持多种布局优化--android-flowlayout"
+     data-content=""
+     data-url="http://lankton.github.io/2016/07/09/【Android】自定义FlowLayout，支持多种布局优化-android-flowlayout/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/09/【Android】自定义FlowLayout，支持多种布局优化-android-flowlayout/"
+           data-title="【Android】自定义FlowLayout，支持多种布局优化--android-flowlayout" data-url="http://lankton.github.io/2016/07/09/【Android】自定义FlowLayout，支持多种布局优化-android-flowlayout/">
+      <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name:"lan-github-page"};
+        (function() {
+          var ds = document.createElement('script');
+          ds.type = 'text/javascript';ds.async = true;
+          ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+          ds.charset = 'UTF-8';
+          (document.getElementsByTagName('head')[0] 
+           || document.getElementsByTagName('body')[0]).appendChild(ds);
+        })();
+        </script>
+      <!-- 多说公共JS代码 end -->
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://github.com/lankton/my_pictures/blob/master/site/header_limbo.jpg?raw=true"
+               alt="Lan" />
+          <p class="site-author-name" itemprop="name">Lan</p>
+          <p class="site-description motion-element" itemprop="description">少年你死了</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lankton" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lankton" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#展示"><span class="nav-number">2.</span> <span class="nav-text">展示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#压缩"><span class="nav-number">2.1.</span> <span class="nav-text">压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对齐"><span class="nav-number">2.2.</span> <span class="nav-text">对齐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#截断"><span class="nav-number">2.3.</span> <span class="nav-text">截断</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#流式布局的实现"><span class="nav-number">3.1.</span> <span class="nav-text">流式布局的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重写generateLayoutParams方法"><span class="nav-number">3.1.1.</span> <span class="nav-text">重写generateLayoutParams方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重写onMeasure"><span class="nav-number">3.1.2.</span> <span class="nav-text">重写onMeasure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重写onLayout"><span class="nav-number">3.1.3.</span> <span class="nav-text">重写onLayout</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#压缩的实现"><span class="nav-number">3.2.</span> <span class="nav-text">压缩的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对齐的实现"><span class="nav-number">3.3.</span> <span class="nav-text">对齐的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#截断的实现"><span class="nav-number">3.4.</span> <span class="nav-text">截断的实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更新"><span class="nav-number">5.</span> <span class="nav-text">更新</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#发布到JCenter-20160519"><span class="nav-number">5.1.</span> <span class="nav-text">发布到JCenter-20160519</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gradle"><span class="nav-number">5.1.1.</span> <span class="nav-text">gradle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#maven"><span class="nav-number">5.1.2.</span> <span class="nav-text">maven</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lan</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lan-github-page"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("hvgPMqDAu4yXLMv9yLUwv7Dl-gzGzoHsz", "D1RnAFtHOTnG8FyFwL7jthBW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

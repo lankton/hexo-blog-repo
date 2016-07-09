@@ -1,5 +1,5 @@
 ---
-title: Android】打开后台运行或者未开启的应用
+title: 【Android】打开后台运行或者未开启的应用
 date: 2016-07-09 21:48:12
 categories: Lan's tech
 tags:

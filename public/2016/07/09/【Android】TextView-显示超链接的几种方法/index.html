@@ -1,0 +1,1002 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="TextView超链接原理在这篇博客的开头， 先介绍一下TextView中超链接是如何起作用的。用户点击文本中的超链接， 会自动生成一个隐式的Intent。这个Intent包含了至少两个信息：action和data。 Action的值为android.intent.action.VIEW， 而data则为超链接的内容。以下文中第一种超链接显示方法为例，点开网址超链接，可以在log中看到这样一条日志">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Android】TextView 显示超链接的几种方法">
+<meta property="og:url" content="http://lankton.github.io/2016/07/09/【Android】TextView-显示超链接的几种方法/index.html">
+<meta property="og:site_name" content="Lan‘s blog">
+<meta property="og:description" content="TextView超链接原理在这篇博客的开头， 先介绍一下TextView中超链接是如何起作用的。用户点击文本中的超链接， 会自动生成一个隐式的Intent。这个Intent包含了至少两个信息：action和data。 Action的值为android.intent.action.VIEW， 而data则为超链接的内容。以下文中第一种超链接显示方法为例，点开网址超链接，可以在log中看到这样一条日志">
+<meta property="og:image" content="http://img.blog.csdn.net/20151115162013610">
+<meta property="og:updated_time" content="2016-07-09T15:17:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Android】TextView 显示超链接的几种方法">
+<meta name="twitter:description" content="TextView超链接原理在这篇博客的开头， 先介绍一下TextView中超链接是如何起作用的。用户点击文本中的超链接， 会自动生成一个隐式的Intent。这个Intent包含了至少两个信息：action和data。 Action的值为android.intent.action.VIEW， 而data则为超链接的内容。以下文中第一种超链接显示方法为例，点开网址超链接，可以在log中看到这样一条日志">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20151115162013610">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://lankton.github.io/2016/07/09/【Android】TextView-显示超链接的几种方法/"/>
+
+  <title> 【Android】TextView 显示超链接的几种方法 | Lan‘s blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lan‘s blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【Android】TextView 显示超链接的几种方法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-09T21:47:53+08:00" content="2016-07-09">
+              2016-07-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Lan-s-tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Lan's tech</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/09/【Android】TextView-显示超链接的几种方法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/09/【Android】TextView-显示超链接的几种方法/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/09/【Android】TextView-显示超链接的几种方法/" class="leancloud_visitors" data-flag-title="【Android】TextView 显示超链接的几种方法">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="TextView超链接原理"><a href="#TextView超链接原理" class="headerlink" title="TextView超链接原理"></a>TextView超链接原理</h2><p>在这篇博客的开头， 先介绍一下TextView中超链接是如何起作用的。<br>用户点击文本中的超链接， 会自动生成一个隐式的Intent。这个Intent包含了至少两个信息：action和data。 Action的值为android.intent.action.VIEW， 而data则为超链接的内容。以下文中第一种超链接显示方法为例，点开网址超链接，可以在log中看到这样一条日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">11-15 02:31:01.818 730-1035/? I/ActivityManager: START u0 &#123;act=android.intent.action.VIEW dat=http://www.lankton.cn cmp=com.android.browser/.BrowserActivity (has extras)&#125; from uid 10062 on display 0</div></pre></td></tr></table></figure>
+<p>系统通过该Intent， 选择合适的Activity进行处理， 达到超链接的效果。</p>
+<h2 id="demo展示"><a href="#demo展示" class="headerlink" title="demo展示"></a>demo展示</h2><p>文中即将说明的四种超链接方法，分别对应demo中的四行， 请对号入座～<br><img src="http://img.blog.csdn.net/20151115162013610" alt="这里写图片描述"></p>
+<h2 id="显示超链接的几种方式"><a href="#显示超链接的几种方式" class="headerlink" title="显示超链接的几种方式"></a>显示超链接的几种方式</h2><h3 id="自动显示超链接，-如电话、网络地址等"><a href="#自动显示超链接，-如电话、网络地址等" class="headerlink" title="自动显示超链接， 如电话、网络地址等"></a>自动显示超链接， 如电话、网络地址等</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">link_tv = (TextView) <span class="keyword">this</span>.findViewById(R.id.link_tv);</div><div class="line">link_tv.setAutoLinkMask(Linkify.ALL);</div><div class="line"></div><div class="line">String a1 = <span class="string">"hello, 13323332333 www.lankton.cn."</span>;</div><div class="line">link_tv.setText(a1);</div></pre></td></tr></table></figure>
+<p>这样电话和网络地址就会在TextView中高亮显示， 并且可以点击跳转。<br>需要注意的是， 必须先setAutoLinkMask， 再设置文本内容，才会生效。<br>同样可以在布局文件里设置AutoLink属性达到同样效果。</p>
+<h3 id="使用html语法"><a href="#使用html语法" class="headerlink" title="使用html语法"></a>使用html语法</h3><p>这里演示通过点击超链接， 跳转到另外一个Activity。<br>首先在Manifest.xml里配置要调转的Activity。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".SecondActivity"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.VIEW"</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.DEFAULT"</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">data</span> <span class="attr">android:scheme</span>=<span class="string">"lankton"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">activity</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这里的重点就是配置了data的scheme， 当点击超链接生成的intent， data的scheme与之相同， 则可以跳转过来。<br>MainActivity中java代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">link_tv2 = (TextView) <span class="keyword">this</span>.findViewById(R.id.link_tv2);  link_tv2.setMovementMethod(LinkMovementMethod.getInstance());<span class="comment">// 必须加</span></div><div class="line">String a2 = <span class="string">"&lt;a href='lankton://lankton/param1/param2'&gt;second activity&lt;/a&gt;"</span>;</div><div class="line">CharSequence cs = Html.fromHtml(a2);</div><div class="line">link_tv2.setText(cs);</div></pre></td></tr></table></figure>
+<p>点击超链接产生如下日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">11-15 02:46:38.616 730-747/? I/ActivityManager: START u0 &#123;act=android.intent.action.VIEW dat=lankton://lankton/param1/param2 cmp=cn.lankton.linkdemo/.SecondActivity (has extras)&#125; from uid 10062 on display 0</div></pre></td></tr></table></figure>
+<h3 id="使用SpannableString，-通过ClickableSpan进行设置"><a href="#使用SpannableString，-通过ClickableSpan进行设置" class="headerlink" title="使用SpannableString， 通过ClickableSpan进行设置"></a>使用SpannableString， 通过ClickableSpan进行设置</h3><p>这种设置有一个好处， 就是我们可以监听到用户对超链接的点击。现在更常见的是实用其子类URLSpan， 可以传进去一个URL， 这样生成的data就会是这个URL， 而不是超链接内容本身了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">link_tv3 = (TextView) <span class="keyword">this</span>.findViewById(R.id.link_tv3); </div><div class="line">link_tv3.setMovementMethod(LinkMovementMethod.getInstance());<span class="comment">// 必须加</span></div><div class="line"><span class="keyword">final</span> SpannableString ss1 = <span class="keyword">new</span> SpannableString(<span class="string">"click1, click2, click3"</span>);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i ++) &#123;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> cur = i * <span class="number">8</span>;</div><div class="line">    ss1.setSpan(<span class="keyword">new</span> ClickableSpan() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View widget)</span> </span>&#123;</div><div class="line">            Toast.makeText(MainActivity.<span class="keyword">this</span>, ss1.subSequence(cur, cur + <span class="number">6</span>).toString(), Toast.LENGTH_SHORT).show();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateDrawState</span><span class="params">(TextPaint ds)</span> </span>&#123;</div><div class="line">            ds.setColor(Color.RED);</div><div class="line">            ds.setUnderlineText(<span class="keyword">false</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;, cur, cur + <span class="number">6</span>, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);</div><div class="line">&#125;</div><div class="line">link_tv3.setText(ss1);</div></pre></td></tr></table></figure>
+<p>可以看到， 使用ClickableSpan或其子类， 不仅可以监听点击事件， 还可以自定义超链接样式。这里就把超链接样式改为了红色字体， 无下划线。</p>
+<h3 id="自定义AutoLink"><a href="#自定义AutoLink" class="headerlink" title="自定义AutoLink"></a>自定义AutoLink</h3><p>在开发中，我们会遇到有一些内容，不属于系统默认的超链接格式， 但我们又需要它成为超链接，比如新浪微博的@内容。<br>这个时候，如果自己逐字符判断， 出现符合的文本字串， 就用ClickableSpan进行设置， 说起来不是不行， 但未免太过费时费力。如果有一种方法， 让系统能像处理默认的超链接那样， 为我们自动选出超链接内容， 岂不美哉。方法只有的， 只需要用一个正则表达式表明你需要的超链接的形式即可。<br>我之前不知道这个方法， 是从下面这篇博文中学习的。别人辛苦总结的，我就不贴在自己的博客里了。大家有需要就进去学习一下， 会有收获的。<br><a href="http://www.cnblogs.com/ryan1012/archive/2011/07/12/2104087.html" target="_blank" rel="external">Android应用实例之—使用Linkify + 正则式区分微博文本链接及跳转处理</a><br>这个方法生成的链接样式是系统自带的，我对其进行了改良， 更改了颜色， 去掉了下划线。可能会另开一篇博文进行分享。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/09/【ghost】centos使用nginx实现ghost博客系统的反向代理/" rel="next" title="【nginx】centos使用nginx实现ghost博客系统的反向代理">
+                <i class="fa fa-chevron-left"></i> 【nginx】centos使用nginx实现ghost博客系统的反向代理
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/09/【Android】打开后台运行或者未开启的应用/" rel="prev" title="【Android】打开后台运行或者未开启的应用">
+                【Android】打开后台运行或者未开启的应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/07/09/【Android】TextView-显示超链接的几种方法/"
+     data-title="【Android】TextView 显示超链接的几种方法"
+     data-content=""
+     data-url="http://lankton.github.io/2016/07/09/【Android】TextView-显示超链接的几种方法/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/09/【Android】TextView-显示超链接的几种方法/"
+           data-title="【Android】TextView 显示超链接的几种方法" data-url="http://lankton.github.io/2016/07/09/【Android】TextView-显示超链接的几种方法/">
+      <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name:"lan-github-page"};
+        (function() {
+          var ds = document.createElement('script');
+          ds.type = 'text/javascript';ds.async = true;
+          ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+          ds.charset = 'UTF-8';
+          (document.getElementsByTagName('head')[0] 
+           || document.getElementsByTagName('body')[0]).appendChild(ds);
+        })();
+        </script>
+      <!-- 多说公共JS代码 end -->
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://github.com/lankton/my_pictures/blob/master/site/header_limbo.jpg?raw=true"
+               alt="Lan" />
+          <p class="site-author-name" itemprop="name">Lan</p>
+          <p class="site-description motion-element" itemprop="description">少年你死了</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lankton" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lankton" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TextView超链接原理"><span class="nav-number">1.</span> <span class="nav-text">TextView超链接原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#demo展示"><span class="nav-number">2.</span> <span class="nav-text">demo展示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示超链接的几种方式"><span class="nav-number">3.</span> <span class="nav-text">显示超链接的几种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自动显示超链接，-如电话、网络地址等"><span class="nav-number">3.1.</span> <span class="nav-text">自动显示超链接， 如电话、网络地址等</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用html语法"><span class="nav-number">3.2.</span> <span class="nav-text">使用html语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用SpannableString，-通过ClickableSpan进行设置"><span class="nav-number">3.3.</span> <span class="nav-text">使用SpannableString， 通过ClickableSpan进行设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义AutoLink"><span class="nav-number">3.4.</span> <span class="nav-text">自定义AutoLink</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lan</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lan-github-page"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("hvgPMqDAu4yXLMv9yLUwv7Dl-gzGzoHsz", "D1RnAFtHOTnG8FyFwL7jthBW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

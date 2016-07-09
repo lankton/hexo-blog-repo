@@ -1,0 +1,1016 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="介绍最近写了一个Library， 用于实现在Android设备上对大图的浏览。已经实现的功能有：1、移动、缩放图片2、双击快速放大或缩小图片3、单击退出浏览4、左右滑动切换图片。目前还只实现了展示SD卡里图片的功能，后续应该补完，使其可以展示网络图片等。代码已经在Github上开源， 地址为：https://github.com/lankton/lanimagebrowser
+展示：图片切换
+图片">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换">
+<meta property="og:url" content="http://lankton.github.io/2016/07/09/【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换/index.html">
+<meta property="og:site_name" content="Lan‘s blog">
+<meta property="og:description" content="介绍最近写了一个Library， 用于实现在Android设备上对大图的浏览。已经实现的功能有：1、移动、缩放图片2、双击快速放大或缩小图片3、单击退出浏览4、左右滑动切换图片。目前还只实现了展示SD卡里图片的功能，后续应该补完，使其可以展示网络图片等。代码已经在Github上开源， 地址为：https://github.com/lankton/lanimagebrowser
+展示：图片切换
+图片">
+<meta property="og:image" content="http://img.blog.csdn.net/20150625192840175">
+<meta property="og:image" content="http://img.blog.csdn.net/20150625193024601">
+<meta property="og:updated_time" content="2016-07-09T15:13:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换">
+<meta name="twitter:description" content="介绍最近写了一个Library， 用于实现在Android设备上对大图的浏览。已经实现的功能有：1、移动、缩放图片2、双击快速放大或缩小图片3、单击退出浏览4、左右滑动切换图片。目前还只实现了展示SD卡里图片的功能，后续应该补完，使其可以展示网络图片等。代码已经在Github上开源， 地址为：https://github.com/lankton/lanimagebrowser
+展示：图片切换
+图片">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150625192840175">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://lankton.github.io/2016/07/09/【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换/"/>
+
+  <title> 【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换 | Lan‘s blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lan‘s blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-09T21:14:36+08:00" content="2016-07-09">
+              2016-07-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Lan-s-tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Lan's tech</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/09/【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/09/【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/09/【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换/" class="leancloud_visitors" data-flag-title="【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>最近写了一个Library， 用于实现在Android设备上对大图的浏览。已经实现的功能有：<br>1、移动、缩放图片<br>2、双击快速放大或缩小图片<br>3、单击退出浏览<br>4、左右滑动切换图片。<br>目前还只实现了展示SD卡里图片的功能，后续应该补完，使其可以展示网络图片等。<br>代码已经在Github上开源， 地址为：<br><a href="https://github.com/lankton/lanimagebrowser" target="_blank" rel="external">https://github.com/lankton/lanimagebrowser</a></p>
+<p>展示：<br>图片切换<br><img src="http://img.blog.csdn.net/20150625192840175" width="200px"></p>
+<p>图片缩放<br><img src="http://img.blog.csdn.net/20150625193024601" width="200px"></p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>实现的思路很简单。图片的缩放、移动等操作通过自定义ImageView实现，这些自定义ImageView通过Fragment来展现。同时，这些Fragment被绑定到ViewPager上，从而实现对图片的切换。下面简单讲一下几个比较关键的地方。</p>
+<ol>
+<li>自定义ImageView<br>主要重写了OnTouchEvent，来监听各种手势事件。同时重写了OnMeasure和OnLayout，来初始化图片在ImageView的显示。直接上代码吧。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div><div class="line">242</div><div class="line">243</div><div class="line">244</div><div class="line">245</div><div class="line">246</div><div class="line">247</div><div class="line">248</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lankton.imagebrowser;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.Timer;</div><div class="line"><span class="keyword">import</span> java.util.TimerTask;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Activity;</div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.graphics.Matrix;</div><div class="line"><span class="keyword">import</span> android.graphics.PointF;</div><div class="line"><span class="keyword">import</span> android.util.AttributeSet;</div><div class="line"><span class="keyword">import</span> android.view.MotionEvent;</div><div class="line"><span class="keyword">import</span> android.widget.ImageView;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BrowserImageView</span> <span class="keyword">extends</span> <span class="title">ImageView</span> </span>&#123;</div><div class="line"></div><div class="line">    Context context;</div><div class="line">    </div><div class="line">    <span class="keyword">float</span> originDistance;</div><div class="line">    <span class="keyword">float</span> curDistance;</div><div class="line">    <span class="keyword">float</span> scale; <span class="comment">//在上次基础上缩放</span></div><div class="line">    <span class="keyword">float</span> curScale = <span class="number">1</span>;</div><div class="line">    <span class="keyword">float</span> beginZoomScale; <span class="comment">//开始缩放时的scale</span></div><div class="line">    </div><div class="line">    Matrix matrix = <span class="keyword">new</span> Matrix();</div><div class="line">    Matrix savedMatrix = <span class="keyword">new</span> Matrix();</div><div class="line">    PointF curPoint = <span class="keyword">new</span> PointF();</div><div class="line">    PointF lastPoint = <span class="keyword">new</span> PointF();</div><div class="line">    <span class="keyword">public</span> BitmapSize bitmapSize;</div><div class="line">    </div><div class="line">    <span class="keyword">private</span> Timer closeTimer;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isClose;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">float</span> BOUNDS = <span class="number">30</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> originX;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> originY;</div><div class="line">    </div><div class="line">    <span class="keyword">float</span> smallScale;</div><div class="line">    <span class="keyword">float</span> bigScale;</div><div class="line">    <span class="keyword">boolean</span> isToBig = <span class="keyword">true</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BrowserImageView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs);</div><div class="line">        <span class="keyword">this</span>.context = context;</div><div class="line"><span class="comment">//        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sb);  </span></div><div class="line">        <span class="comment">// TODO Auto-generated constructor stub</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BrowserImageView</span><span class="params">(Context c)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">super</span>(c);</div><div class="line">        <span class="keyword">this</span>.context = c;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBitmapSize</span><span class="params">(BitmapSize b)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">this</span>.bitmapSize = b;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        <span class="keyword">switch</span>(event.getAction() &amp; MotionEvent.ACTION_MASK)</div><div class="line">        &#123;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</div><div class="line">            curPoint.x = event.getX();</div><div class="line">            curPoint.y = event.getY();</div><div class="line">            savedMatrix.set(matrix);  </div><div class="line">            isClose = <span class="keyword">true</span>;</div><div class="line">            originX = curPoint.x;</div><div class="line">            originY = curPoint.y;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_POINTER_DOWN:</div><div class="line">            isClose = <span class="keyword">false</span>;</div><div class="line">            originDistance = getDistance(event.getX(<span class="number">0</span>), event.getY(<span class="number">0</span>),</div><div class="line">                    event.getX(<span class="number">1</span>), event.getY(<span class="number">1</span>));</div><div class="line">            beginZoomScale = curScale;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_MOVE:</div><div class="line">            <span class="keyword">if</span>(isOutBounds(originX, originY, event.getX(<span class="number">0</span>), event.getY(<span class="number">0</span>)))</div><div class="line">            &#123;</div><div class="line">                isClose = <span class="keyword">false</span>;</div><div class="line">                </div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span>(event.getPointerCount() == <span class="number">2</span>)</div><div class="line">            &#123;</div><div class="line">                curDistance = getDistance(event.getX(<span class="number">0</span>), event.getY(<span class="number">0</span>),</div><div class="line">                        event.getX(<span class="number">1</span>), event.getY(<span class="number">1</span>));</div><div class="line">                scale = curDistance / originDistance;</div><div class="line">                curScale = beginZoomScale * scale;</div><div class="line">                matrix.set(savedMatrix); </div><div class="line">                matrix.postScale(scale,  scale</div><div class="line">                        , (event.getX(<span class="number">0</span>) + event.getX(<span class="number">1</span>))/<span class="number">2</span></div><div class="line">                        , (event.getY(<span class="number">0</span>) + event.getY(<span class="number">1</span>))/<span class="number">2</span>);</div><div class="line">                <span class="keyword">this</span>.setImageMatrix(matrix);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(event.getPointerCount() == <span class="number">1</span>)</div><div class="line">            &#123;</div><div class="line">                lastPoint.x = curPoint.x;</div><div class="line">                lastPoint.y = curPoint.y;</div><div class="line">                curPoint.x = event.getX();</div><div class="line">                curPoint.y = event.getY();</div><div class="line">                matrix.postTranslate(curPoint.x - lastPoint.x, curPoint.y - lastPoint.y);</div><div class="line">                <span class="keyword">this</span>.setImageMatrix(matrix); </div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_UP:</div><div class="line">            <span class="keyword">if</span>(isClose)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">if</span>(<span class="keyword">null</span> == closeTimer)</div><div class="line">                &#123;</div><div class="line">                    closeTimer = <span class="keyword">new</span> Timer();</div><div class="line">                    TimerTask task = <span class="keyword">new</span> TimerTask()&#123;</div><div class="line"></div><div class="line">                        <span class="meta">@Override</span></div><div class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                            <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">                            ((Activity) context).finish();</div><div class="line">                        &#125;</div><div class="line">                        </div><div class="line">                    &#125;; </div><div class="line">                    closeTimer.schedule(task, <span class="number">500</span>);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">else</span></div><div class="line">                &#123;<span class="comment">//double click</span></div><div class="line">                    closeTimer.cancel();</div><div class="line">                    closeTimer = <span class="keyword">null</span>;</div><div class="line">                    <span class="keyword">if</span>(isToBig)</div><div class="line">                    &#123;</div><div class="line">                        matrix.postScale(bigScale / curScale , bigScale / curScale, event.getX(), event.getY());</div><div class="line">                        curScale = bigScale;</div><div class="line">                        <span class="keyword">this</span>.setImageMatrix(matrix); </div><div class="line">                        isToBig = <span class="keyword">false</span>;</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">else</span></div><div class="line">                    &#123;</div><div class="line">                        matrix.postScale(smallScale / curScale, smallScale / curScale, event.getX(), event.getY());</div><div class="line">                        curScale = smallScale;</div><div class="line">                        <span class="keyword">this</span>.setImageMatrix(matrix); </div><div class="line">                        isToBig = <span class="keyword">true</span>;</div><div class="line">                    &#125;</div><div class="line">                    </div><div class="line">                &#125;</div><div class="line">                </div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> MotionEvent.ACTION_POINTER_UP:</div><div class="line">            <span class="keyword">if</span>(<span class="number">1</span> == event.getActionIndex())</div><div class="line">            &#123;</div><div class="line">                curPoint.x = event.getX(<span class="number">0</span>);</div><div class="line">                curPoint.y = event.getY(<span class="number">0</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">else</span></div><div class="line">            &#123;</div><div class="line">                curPoint.x = event.getX(<span class="number">1</span>);</div><div class="line">                curPoint.y = event.getY(<span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">            savedMatrix.set(matrix);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">  </div><div class="line">    <span class="comment">/*获得两点间距离*/</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getDistance</span><span class="params">(<span class="keyword">float</span> x1, <span class="keyword">float</span> y1, <span class="keyword">float</span> x2, <span class="keyword">float</span> y2)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">float</span> disX = x1 - x2;</div><div class="line">        <span class="keyword">float</span> disY = y1 - y2;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">float</span>)Math.sqrt(disX * disX + disY * disY);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">/*设置图片以合适大小居中*/</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">center</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">int</span> viewWidth = <span class="keyword">this</span>.getMeasuredWidth();</div><div class="line">        <span class="keyword">int</span> viewHeight = <span class="keyword">this</span>.getMeasuredHeight();</div><div class="line">        <span class="keyword">int</span> bitmapWidth = bitmapSize.width;</div><div class="line">        <span class="keyword">int</span> bitmapHeight = bitmapSize.height;</div><div class="line">        <span class="keyword">float</span> scale = <span class="number">1</span>;</div><div class="line">        <span class="comment">//先居中</span></div><div class="line">        matrix.setTranslate((viewWidth - bitmapWidth)/<span class="number">2f</span>, (viewHeight - bitmapHeight)/<span class="number">2f</span>);</div><div class="line">        </div><div class="line">        <span class="comment">//图片宽高有大于容器, 则需要再进行一次缩放处理</span></div><div class="line">        <span class="keyword">if</span>(bitmapWidth &gt; viewWidth || bitmapHeight &gt; viewHeight)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>((<span class="keyword">float</span>)bitmapWidth / bitmapHeight &gt; (<span class="keyword">float</span>)viewWidth / viewHeight)</div><div class="line">            &#123;</div><div class="line">                <span class="comment">//宽、高比大于容器，以宽占满容器宽度为准，进行缩放</span></div><div class="line">                scale = (<span class="keyword">float</span>)viewWidth / bitmapWidth;               </div><div class="line">                matrix.postScale(scale, scale, (<span class="keyword">float</span>)viewWidth / <span class="number">2</span>, (<span class="keyword">float</span>)viewHeight / <span class="number">2</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">else</span></div><div class="line">            &#123;</div><div class="line">                <span class="comment">//高、宽比大于容器， 以高占满容器高度为准，进行缩放</span></div><div class="line">                scale = (<span class="keyword">float</span>)viewHeight / bitmapHeight;</div><div class="line">                matrix.postScale(scale, scale, (<span class="keyword">float</span>)viewWidth / <span class="number">2</span>, (<span class="keyword">float</span>)viewHeight / <span class="number">2</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        smallScale = scale;</div><div class="line">        bigScale = smallScale * <span class="number">2</span>;</div><div class="line">        <span class="keyword">this</span>.setImageMatrix(matrix);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        <span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec);</div><div class="line">        refresh();</div><div class="line"><span class="comment">//        center();</span></div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span>  </div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLayout</span><span class="params">(<span class="keyword">boolean</span> changed, <span class="keyword">int</span> l, <span class="keyword">int</span> t, <span class="keyword">int</span> r, <span class="keyword">int</span> b)</span> </span>&#123;  </div><div class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == bitmapSize)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        center();</div><div class="line">    &#125;  </div><div class="line">    </div><div class="line">    <span class="comment">/*刷新matrix*/</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        matrix.reset();</div><div class="line">        <span class="keyword">this</span>.setImageMatrix(matrix);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BitmapSize</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">public</span> <span class="keyword">int</span> width;</div><div class="line">        <span class="keyword">public</span> <span class="keyword">int</span> height;</div><div class="line">        </div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">BitmapSize</span><span class="params">(<span class="keyword">int</span> width, <span class="keyword">int</span> height)</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">this</span>.width = width;</div><div class="line">            <span class="keyword">this</span>.height = height;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/*手指在屏幕上移动超过范围才被判定为滑动，否则影响点击事件的判断*/</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isOutBounds</span><span class="params">(<span class="keyword">float</span> x1, <span class="keyword">float</span> y1, <span class="keyword">float</span> x2, <span class="keyword">float</span> y2 )</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> Math.abs(x2 - x1) *  Math.abs(x2 - x1) </div><div class="line">                +  Math.abs(y2 - y1) * Math.abs(y2 - y1) &gt; BOUNDS * BOUNDS; </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，图片的位移及大小变换是通过修改matrix实现的，所以使用时该自定义View的scaleType被设为“matrix”。</p>
+<ol>
+<li>Fragment编写<br>这个，也还是直接上代码吧。。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lankton.imagebrowser;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.io.FileInputStream;</div><div class="line"><span class="keyword">import</span> java.io.FileNotFoundException;</div><div class="line"><span class="keyword">import</span> java.util.Timer;</div><div class="line"><span class="keyword">import</span> java.util.TimerTask;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.lankton.imagebrowser.BrowserImageView.BitmapSize;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">import</span> android.R;</div><div class="line"><span class="keyword">import</span> android.graphics.Bitmap;</div><div class="line"><span class="keyword">import</span> android.graphics.BitmapFactory;</div><div class="line"><span class="keyword">import</span> android.os.AsyncTask;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.support.v4.app.Fragment;</div><div class="line"><span class="keyword">import</span> android.support.v4.util.LruCache;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"><span class="keyword">import</span> android.view.LayoutInflater;</div><div class="line"><span class="keyword">import</span> android.view.View;</div><div class="line"><span class="keyword">import</span> android.view.View.OnClickListener;</div><div class="line"><span class="keyword">import</span> android.view.ViewGroup;</div><div class="line"><span class="keyword">import</span> android.widget.ImageView.ScaleType;</div><div class="line"><span class="keyword">import</span> android.widget.RelativeLayout;</div><div class="line"><span class="keyword">import</span> android.widget.TextView;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> BrowserImageView img;</div><div class="line">    <span class="keyword">private</span> String path;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> pos;</div><div class="line">    <span class="keyword">private</span> Timer clickTimer;</div><div class="line">    </div><div class="line">    LruCache&lt;String, Bitmap&gt; cache;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IFragment</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IFragment</span><span class="params">(String path, <span class="keyword">int</span> pos, LruCache&lt;String, Bitmap&gt; cache)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.path = path;</div><div class="line">        <span class="keyword">this</span>.pos = pos;</div><div class="line">        <span class="keyword">this</span>.cache = cache;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater, ViewGroup container,</span></span></div><div class="line">            Bundle savedInstanceState) &#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        Log.v(<span class="string">"browser"</span>, <span class="string">""</span>+pos+<span class="string">" onCreateview"</span>);</div><div class="line">        RelativeLayout relativeLayout = <span class="keyword">new</span> RelativeLayout(<span class="keyword">this</span>.getActivity());</div><div class="line">        relativeLayout.setBackgroundColor(<span class="keyword">this</span>.getResources().getColor(R.color.black));</div><div class="line">        BrowserImageView bimg = <span class="keyword">new</span> BrowserImageView(<span class="keyword">this</span>.getActivity());</div><div class="line">        RelativeLayout.LayoutParams lp = <span class="keyword">new</span> RelativeLayout.LayoutParams(</div><div class="line">                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);</div><div class="line">        lp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);</div><div class="line">        bimg.setScaleType(ScaleType.MATRIX);</div><div class="line">        bimg.setClickable(<span class="keyword">true</span>);</div><div class="line">        relativeLayout.addView(bimg, lp);</div><div class="line">        img = bimg;</div><div class="line">        img.setOnClickListener(<span class="keyword">new</span> OnClickListener()&#123;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">                <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">                Toast.makeText(IFragment.<span class="keyword">this</span>.getActivity(), <span class="string">"click"</span>, <span class="number">3000</span>).show();</div><div class="line">                <span class="keyword">if</span>(<span class="keyword">null</span> == clickTimer)</div><div class="line">                &#123;</div><div class="line">                    clickTimer = <span class="keyword">new</span> Timer();</div><div class="line">                    TimerTask task = <span class="keyword">new</span> TimerTask()&#123;</div><div class="line"></div><div class="line">                        <span class="meta">@Override</span></div><div class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                            <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">                            IFragment.<span class="keyword">this</span>.getActivity().finish();</div><div class="line">                            Toast.makeText(IFragment.<span class="keyword">this</span>.getActivity(), <span class="string">"close"</span>, <span class="number">3000</span>).show();</div><div class="line">                        &#125;</div><div class="line">                        </div><div class="line">                    &#125;; </div><div class="line">                    clickTimer.schedule(task, <span class="number">200</span>);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">else</span></div><div class="line">                &#123;</div><div class="line">                    clickTimer.cancel();</div><div class="line">                    clickTimer = <span class="keyword">null</span>;</div><div class="line">                &#125;</div><div class="line">                </div><div class="line">                </div><div class="line">            &#125;</div><div class="line">            </div><div class="line">        &#125;);</div><div class="line">        </div><div class="line">        TextView t = <span class="keyword">new</span> TextView(<span class="keyword">this</span>.getActivity());</div><div class="line">        t.setText(<span class="string">""</span> + pos);</div><div class="line">        t.setTextSize(<span class="number">30</span>);</div><div class="line">        t.setTextColor(<span class="keyword">this</span>.getResources().getColor(R.color.white));</div><div class="line">        relativeLayout.addView(t,lp);</div><div class="line">        <span class="keyword">return</span> relativeLayout;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        Log.v(<span class="string">"browser"</span>, <span class="string">""</span>+pos+<span class="string">" onDestroy"</span>);</div><div class="line">        <span class="keyword">super</span>.onDestroy();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPause</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub  </span></div><div class="line">        <span class="keyword">super</span>.onPause();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResume</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        Log.v(<span class="string">"browser"</span>, <span class="string">""</span>+pos+<span class="string">" onResume"</span>);</div><div class="line">        <span class="keyword">super</span>.onResume();</div><div class="line">        setBitmap();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        Log.v(<span class="string">"browser"</span>, <span class="string">""</span>+pos+<span class="string">" onStop"</span>);</div><div class="line">        <span class="keyword">super</span>.onStop();</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBitmap</span><span class="params">()</span> </span>&#123;</div><div class="line">        Bitmap bitmap = IFragment.<span class="keyword">this</span>.getBitmapFromMemCache(path);</div><div class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == bitmap)</div><div class="line">        &#123;</div><div class="line">            LoadBitmapTask task = <span class="keyword">new</span> LoadBitmapTask();</div><div class="line">            task.execute();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            BitmapSize bs = img.new BitmapSize(bitmap.getWidth(), bitmap.getHeight());</div><div class="line">            img.setBitmapSize(bs);</div><div class="line">            img.setImageBitmap(bitmap);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBitmapToMemoryCache</span><span class="params">(String key, Bitmap bitmap)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (getBitmapFromMemCache(key) == <span class="keyword">null</span>) &#123;</div><div class="line">            cache.put(key, bitmap);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Bitmap <span class="title">getBitmapFromMemCache</span><span class="params">(String key)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> cache.get(key);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">LoadBitmapTask</span> <span class="keyword">extends</span> <span class="title">AsyncTask</span>&lt;<span class="title">Void</span>, <span class="title">Void</span>, <span class="title">Bitmap</span>&gt;</span></div><div class="line">    &#123;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">protected</span> Bitmap <span class="title">doInBackground</span><span class="params">(Void... params)</span> </span>&#123;</div><div class="line">            <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">            Bitmap bitmap = <span class="keyword">null</span>;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                FileInputStream fin = <span class="keyword">new</span> FileInputStream(path);</div><div class="line">                <span class="keyword">final</span> BitmapFactory.Options options = <span class="keyword">new</span> BitmapFactory.Options();</div><div class="line">                options.inSampleSize = <span class="number">2</span>;</div><div class="line">                options.inJustDecodeBounds = <span class="keyword">false</span>;</div><div class="line">                bitmap = BitmapFactory.decodeStream(fin, <span class="keyword">null</span>, options);</div><div class="line">                IFragment.<span class="keyword">this</span>.addBitmapToMemoryCache(path, bitmap);</div><div class="line">            &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</div><div class="line">                <span class="comment">// TODO Auto-generated catch block</span></div><div class="line">                e.printStackTrace();</div><div class="line">            &#125; </div><div class="line">            <span class="keyword">return</span> bitmap;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onPostExecute</span><span class="params">(Bitmap result)</span> </span>&#123;</div><div class="line">            <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">            <span class="keyword">super</span>.onPostExecute(result);</div><div class="line">            BitmapSize bs = img.new BitmapSize(result.getWidth(), result.getHeight());</div><div class="line">            img.setBitmapSize(bs);</div><div class="line">            img.setImageBitmap(result);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于工程要被拿来当作library，可以看到在onCreateView通过代码生成自定义的BrowserImageView并被设置到布局里。BrowserImageView的scaleType被设置成“matrix”。加载时，通过AsyncTask异步加载图片。</p>
+<ol>
+<li>图片缓存<br>通过LruCache动态进行内存管理，否则很高概率出现OOM。缓存初始化放在了ViewPager的Adapter里：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lankton.imagebrowser;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.List;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.graphics.Bitmap;</div><div class="line"><span class="keyword">import</span> android.support.v4.app.Fragment;</div><div class="line"><span class="keyword">import</span> android.support.v4.app.FragmentManager;</div><div class="line"><span class="keyword">import</span> android.support.v4.app.FragmentPagerAdapter;</div><div class="line"><span class="keyword">import</span> android.support.v4.util.LruCache;</div><div class="line"><span class="keyword">import</span> android.util.Log;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IPagerAdapter</span> <span class="keyword">extends</span> <span class="title">FragmentPagerAdapter</span></span>&#123;</div><div class="line">    List&lt;String&gt; pathList;</div><div class="line">    LruCache&lt;String, Bitmap&gt; cache;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IPagerAdapter</span><span class="params">(FragmentManager fm, List&lt;String&gt; pathList)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(fm);</div><div class="line">        <span class="keyword">this</span>.pathList = pathList;</div><div class="line">        </div><div class="line">        <span class="comment">/*init LruCache*/</span></div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> maxMemory = (<span class="keyword">int</span>) (Runtime.getRuntime().maxMemory() / <span class="number">1024</span>);Log.v(<span class="string">"diskcache"</span>,<span class="string">"mem : "</span> + maxMemory);</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> cacheSize = <span class="number">1</span> * <span class="number">1024</span> * <span class="number">1024</span>;<span class="comment">//maxMemory / 8;</span></div><div class="line">        cache = <span class="keyword">new</span> LruCache&lt;String, Bitmap&gt;(cacheSize);</div><div class="line">        <span class="comment">// TODO Auto-generated constructor stub</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Fragment <span class="title">getItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        IFragment f = <span class="keyword">new</span> IFragment(pathList.get(position),position, cache);</div><div class="line">        <span class="keyword">return</span> f;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        <span class="keyword">return</span> pathList.size();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在之前介绍Fragment的代码里可以看到如何使用LruCache的，不再赘述了。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>本Library主要提供了一个PagerAdapter。使用时，让该工程作为Library被需要的工程引用即可。<br>使用时的代码如下： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        // TODO Auto-generated method stub</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        this.setContentView(R.layout.lanactivity_browserimage);</div><div class="line">        viewPager = (ViewPager) this.findViewById(R.id.viewpager);</div><div class="line">        </div><div class="line">        </div><div class="line">        </div><div class="line">        photos = this.getIntent().getStringArrayListExtra(&quot;photoList&quot;);</div><div class="line">        index = this.getIntent().getIntExtra(&quot;index&quot;, 0);</div><div class="line">        </div><div class="line">        adapter = new IPagerAdapter(this.getSupportFragmentManager(), photos);</div><div class="line">        viewPager.setAdapter(adapter);</div><div class="line">        viewPager.setCurrentItem(index);</div><div class="line">        </div><div class="line">        </div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>在你的布局文件里放置一个普通的ViewPager，然后使用类库提供的IPagerAdapter即可。需要传进Adapter的参数，即photos，是你本地文件的路径列表。之后该Activity就可以拿来进行图片浏览了。</p>
+<p>就先介绍到这里吧， 这个Library目前还有不少需要改进和提升的地方，请多多指教。</p>
+<p>最后在申明一次开源地址， 代码都可以从这里获取：<br><a href="https://github.com/lankton/lanimagebrowser" target="_blank" rel="external">https://github.com/lankton/lanimagebrowser</a></p>
+<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>###解决viewpager和imageview的滑动冲突 2015 6 28###<br>之前版本，想直接左右拖动图片时(eg 图片放大状态，想查看未显示的部分)，会直接出发viewpager的翻页事件。<br>解决方案：手指在imageview上move时，根据条件判断是否应该禁止viewpager的滑动事件。参考链接：<a href="http://www.cnblogs.com/xitang/archive/2013/06/22/3150380.html" target="_blank" rel="external">requestDisallowInterceptTouchEvent</a><br>参考里viewpager直接传递进子view， 其实不用，可以直接通过getParent()获得。同时本library的情况要分别考虑左划和右划。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">Rect rectTemp = <span class="keyword">this</span>.getDrawable().getBounds(); </div><div class="line">                matrix.getValues(values);</div><div class="line">                <span class="keyword">int</span> leftPos = (<span class="keyword">int</span>)values[<span class="number">2</span>];</div><div class="line">                <span class="keyword">int</span> rightPos = (<span class="keyword">int</span>)(values[<span class="number">2</span>]+rectTemp.width()*values[<span class="number">0</span>]);  </div><div class="line">                lastPoint.x = curPoint.x;</div><div class="line">                lastPoint.y = curPoint.y;</div><div class="line">                curPoint.x = event.getX();</div><div class="line">                curPoint.y = event.getY();</div><div class="line">                <span class="keyword">if</span>(leftPos &lt; <span class="number">0</span> &amp;&amp; curPoint.x &gt; lastPoint.x || rightPos &gt; viewWidth &amp;&amp; curPoint.x &lt; lastPoint.x)</div><div class="line">                &#123;<span class="comment">// 图片左边未显示完全时禁止向右划，向左划同理</span></div><div class="line">                    <span class="keyword">this</span>.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">true</span>);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">else</span> </div><div class="line">                &#123;</div><div class="line">                    <span class="keyword">this</span>.getParent().requestDisallowInterceptTouchEvent(<span class="keyword">false</span>);</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125;</div></pre></td></tr></table></figure>
+<p>已同步至git。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/09/【Android】自定义控件实现九宫格解锁/" rel="prev" title="【Android】自定义控件实现九宫格解锁">
+                【Android】自定义控件实现九宫格解锁 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/07/09/【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换/"
+     data-title="【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换"
+     data-content=""
+     data-url="http://lankton.github.io/2016/07/09/【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/09/【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换/"
+           data-title="【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换" data-url="http://lankton.github.io/2016/07/09/【Android】一个浏览图片的Android库的实现，可以移动、缩放图片以及滑动切换/">
+      <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name:"lan-github-page"};
+        (function() {
+          var ds = document.createElement('script');
+          ds.type = 'text/javascript';ds.async = true;
+          ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+          ds.charset = 'UTF-8';
+          (document.getElementsByTagName('head')[0] 
+           || document.getElementsByTagName('body')[0]).appendChild(ds);
+        })();
+        </script>
+      <!-- 多说公共JS代码 end -->
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://github.com/lankton/my_pictures/blob/master/site/header_limbo.jpg?raw=true"
+               alt="Lan" />
+          <p class="site-author-name" itemprop="name">Lan</p>
+          <p class="site-description motion-element" itemprop="description">少年你死了</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lankton" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lankton" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新"><span class="nav-number">4.</span> <span class="nav-text">更新</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lan</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lan-github-page"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("hvgPMqDAu4yXLMv9yLUwv7Dl-gzGzoHsz", "D1RnAFtHOTnG8FyFwL7jthBW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

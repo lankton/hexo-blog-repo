@@ -1,5 +1,5 @@
 ---
-title: Android】自定义控件实现可滑动的开关(switch)
+title: 【Android】自定义控件实现可滑动的开关(switch)
 date: 2016-07-09 21:15:48
 categories: Lan's tech
 tags:

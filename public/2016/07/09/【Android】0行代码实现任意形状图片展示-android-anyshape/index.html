@@ -1,0 +1,1016 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="前言在Android开发中， 我们经常会遇到一些场景， 需要以一些特殊的形状显示图片， 比如圆角矩形、圆形等等。关于如何绘制这类形状， 网上已经有很多的方案，比如自定义控件重写onDraw方法， 通过canvas的各种draw方法进行绘制等。那么， 更复杂的图形呢？比如，五角星？比如组合图形？又或者是各种奇奇怪怪的不规则图形呢？有同学会说， 如果已知不规则图形的具体形状， 那我们就可以通过连接顶点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Android】0行代码实现任意形状图片展示--android-anyshape">
+<meta property="og:url" content="http://lankton.github.io/2016/07/09/【Android】0行代码实现任意形状图片展示-android-anyshape/index.html">
+<meta property="og:site_name" content="Lan‘s blog">
+<meta property="og:description" content="前言在Android开发中， 我们经常会遇到一些场景， 需要以一些特殊的形状显示图片， 比如圆角矩形、圆形等等。关于如何绘制这类形状， 网上已经有很多的方案，比如自定义控件重写onDraw方法， 通过canvas的各种draw方法进行绘制等。那么， 更复杂的图形呢？比如，五角星？比如组合图形？又或者是各种奇奇怪怪的不规则图形呢？有同学会说， 如果已知不规则图形的具体形状， 那我们就可以通过连接顶点">
+<meta property="og:image" content="http://img.blog.csdn.net/20160327163538291">
+<meta property="og:image" content="http://img.blog.csdn.net/20160327163638432">
+<meta property="og:image" content="http://img.blog.csdn.net/20160327164339919">
+<meta property="og:image" content="http://img.blog.csdn.net/20160327175945131">
+<meta property="og:image" content="http://img.blog.csdn.net/20160327180054263">
+<meta property="og:updated_time" content="2016-07-09T15:20:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Android】0行代码实现任意形状图片展示--android-anyshape">
+<meta name="twitter:description" content="前言在Android开发中， 我们经常会遇到一些场景， 需要以一些特殊的形状显示图片， 比如圆角矩形、圆形等等。关于如何绘制这类形状， 网上已经有很多的方案，比如自定义控件重写onDraw方法， 通过canvas的各种draw方法进行绘制等。那么， 更复杂的图形呢？比如，五角星？比如组合图形？又或者是各种奇奇怪怪的不规则图形呢？有同学会说， 如果已知不规则图形的具体形状， 那我们就可以通过连接顶点">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160327163538291">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://lankton.github.io/2016/07/09/【Android】0行代码实现任意形状图片展示-android-anyshape/"/>
+
+  <title> 【Android】0行代码实现任意形状图片展示--android-anyshape | Lan‘s blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lan‘s blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【Android】0行代码实现任意形状图片展示--android-anyshape
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-09T22:01:58+08:00" content="2016-07-09">
+              2016-07-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Lan-s-tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Lan's tech</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/09/【Android】0行代码实现任意形状图片展示-android-anyshape/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/09/【Android】0行代码实现任意形状图片展示-android-anyshape/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/09/【Android】0行代码实现任意形状图片展示-android-anyshape/" class="leancloud_visitors" data-flag-title="【Android】0行代码实现任意形状图片展示--android-anyshape">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在Android开发中， 我们经常会遇到一些场景， 需要以一些特殊的形状显示图片， 比如圆角矩形、圆形等等。关于如何绘制这类形状， 网上已经有很多的方案，比如自定义控件重写onDraw方法， 通过canvas的各种draw方法进行绘制等。那么， 更复杂的图形呢？比如，五角星？比如组合图形？又或者是各种奇奇怪怪的不规则图形呢？有同学会说， 如果已知不规则图形的具体形状， 那我们就可以通过连接顶点的方式， 找出path， 然后通过drawPath方法绘制出来啊。嗯。。。很有道理， 但是先不说有些图像，可能顶点巨多， 或者弯弯曲曲很难找出具体的顶点， 难道我们要为每一个特殊的形状， 单独写一个独立的控件， 或者一套独立的代码吗？<br>可以肯定是可以，但是我觉得， 最好还是不要这么做。。于是我有了一个想法， <strong>用一张图片， 告诉控件，我想要什么样的形状， 然后控件自动按照这个形状， 帮我把图片显示出来</strong>。于是有了这个项目－－<a href="https://github.com/lankton/android-anyshape" target="_blank" rel="external">android-anyshape</a>。</p>
+<h1 id="展示"><a href="#展示" class="headerlink" title="展示"></a>展示</h1><p><img src="http://img.blog.csdn.net/20160327163538291" width="200px">&nbsp;&nbsp;&nbsp;<img src="http://img.blog.csdn.net/20160327163638432" width="200px"><br>左边是使用了普通ImageView的展示效果， 右边是使用了项目中AnyshapeImageView的效果。想使用AnyshapeImageView达到右边的样式， 仅需提供三张遮罩图片，通过”anyshapeMask”参数提供给控件即可（下文会说明）。<br>三张“遮罩”图片如下：<br><img src="http://img.blog.csdn.net/20160327164339919" height="100px">&nbsp;&nbsp;&nbsp;<img src="http://img.blog.csdn.net/20160327175945131" height="100px">&nbsp;&nbsp;&nbsp;<img src="http://img.blog.csdn.net/20160327180054263" height="100px"><br>与普通的遮罩图片不同， 这里要求<strong>图片的背景完全透明， 即alpha通道的值为0， 而需要显示的图形，对具体的颜色没有任何要求，不透明即可</strong>。</p>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>控件的使用很简单， 由于继承ImageView， 所以使用方法类似于ImageView，但多了一个重要的自定义参数：anyshapeMask<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">cn.lankton.anyshape.AnyshapeImageView</span></span></div><div class="line">   <span class="attr">android:layout_width</span>=<span class="string">"150dp"</span></div><div class="line">   <span class="attr">android:layout_height</span>=<span class="string">"150dp"</span></div><div class="line">   <span class="attr">android:layout_marginTop</span>=<span class="string">"20dp"</span></div><div class="line">   <span class="attr">android:src</span>=<span class="string">"@drawable/kumamon"</span></div><div class="line">   <span class="attr">app:anyshapeMask</span>=<span class="string">"@drawable/singlestar"</span>/&gt;</div></pre></td></tr></table></figure></p>
+<p>在布局文件中加入这段xml， 展示的就是上面图中那头五角星形状的熊本熊～<br>实现这个功能的思路其实很简单，通过对一张“遮罩”图片各像素透明度的扫描，获得一个Path对象， 该Path对象包含了所有不透明像素的集合。然后就很简单了， 通过Canvas对象的drawPath方法，将我们要显示的图片刷上去即可。</p>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h2 id="从Bitmap中提取Path"><a href="#从Bitmap中提取Path" class="headerlink" title="从Bitmap中提取Path"></a>从Bitmap中提取Path</h2><p><strong>这是这个项目中最重要的部分</strong>。代码如下：<br>PathInfoManager.getPathFromBitmap:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Path <span class="title">getPathFromBitmap</span><span class="params">(Bitmap mask)</span> </span>&#123;</div><div class="line">    Path path = <span class="keyword">new</span> Path();</div><div class="line">    <span class="keyword">int</span> bWidth = mask.getWidth();</div><div class="line">    <span class="keyword">int</span> bHeight = mask.getHeight();</div><div class="line">    <span class="keyword">int</span>[] origin = <span class="keyword">new</span> <span class="keyword">int</span>[bWidth];</div><div class="line">    <span class="keyword">int</span> lastA;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; bHeight; i++) &#123;</div><div class="line">        mask.getPixels(origin, <span class="number">0</span>, bWidth, <span class="number">0</span>, i, bWidth, <span class="number">1</span>);</div><div class="line">        lastA = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; bWidth; j++) &#123;</div><div class="line">            <span class="keyword">int</span> a = Color.alpha(origin[j]);</div><div class="line">            <span class="keyword">if</span> (a != <span class="number">0</span> &amp;&amp; lastA == <span class="number">0</span>) &#123;</div><div class="line">                path.moveTo(j, i);</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">0</span> &amp;&amp; lastA !=<span class="number">0</span> ) &#123;</div><div class="line">                path.lineTo(j - <span class="number">1</span>, i);</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a != <span class="number">0</span> &amp;&amp; j == bWidth - <span class="number">1</span>) &#123;</div><div class="line">                path.lineTo(j, i);</div><div class="line">            &#125;</div><div class="line">            lastA = a;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> path;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>我设计的方案很简单，逐行扫描Bitmap中的像素，实现方法是用getPixels方法获得每行的像素数组，然后遍历分析。步骤如下：</p>
+<ol>
+<li>遇到一个不透明像素，进行判断， 如果它的上一个像素不透明， 或者它本身就是行首， 那我们就把它看作一段不透明区域的开头，通过moveTo方法将Path移动到此点；</li>
+<li>遇到一个透明像素，进行判断，如果它的上一个像素透明，那我们就把它的上一个像素看作一段不透明区域的结尾， 通过lineTo的方式， 将它与之前的开头像素连接。</li>
+<li>重复1、2步， 直到扫描完全行。需要注意的是， 如果行尾是不透明像素， 那就直接连上。防止最后一段不透明区域只有起点没有终点。<br>这样， 每一行的连接结果，就组成了整张图片的扫描结果～<h2 id="通过Path，显示图像"><a href="#通过Path，显示图像" class="headerlink" title="通过Path，显示图像"></a>通过Path，显示图像</h2>先看一下AnyshapeImageView的初始化方法：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">AnyshapeImageView</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>(context, attrs, defStyleAttr);</div><div class="line">    <span class="keyword">this</span>.context = context;</div><div class="line">    TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AnyShapeImageView, defStyleAttr, <span class="number">0</span>);</div><div class="line">    <span class="keyword">int</span> n = a.getIndexCount();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> attr = a.getIndex(i);</div><div class="line">        <span class="keyword">if</span> (attr == R.styleable.AnyShapeImageView_anyshapeMask) &#123;</div><div class="line">            maskResId = a.getResourceId(attr, <span class="number">0</span>);</div><div class="line">            <span class="keyword">if</span> (<span class="number">0</span> == maskResId) &#123;</div><div class="line">                <span class="comment">//did not set mask</span></div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (attr == R.styleable.AnyShapeImageView_anyshapeBackColor) &#123;</div><div class="line">            backColor = a.getColor(attr, Color.TRANSPARENT);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    a.recycle();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实就是调用通过anyshapeMask参数， 获得“遮罩”图片的资源ID以及背景色。 真正通过资源ID解析获取遮罩的过程放在了onMeaaure中。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec);</div><div class="line">    <span class="keyword">int</span> mWidth = getMeasuredWidth();</div><div class="line">    <span class="keyword">int</span> mHeight = getMeasuredHeight();</div><div class="line">    <span class="keyword">if</span> (mWidth != <span class="number">0</span> &amp;&amp; mHeight != <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (maskResId &lt;= <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        PathInfo pi = PathManager.getInstance().getPathInfo(maskResId);</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != pi) &#123;</div><div class="line">            originMaskPath = pi.path;</div><div class="line">            originMaskWidth = pi.width;</div><div class="line">            originMaskHeight = pi.height;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            BitmapFactory.Options options = <span class="keyword">new</span> BitmapFactory.Options();</div><div class="line">            options.inJustDecodeBounds = <span class="keyword">true</span>;</div><div class="line">            BitmapFactory.decodeResource(context.getResources(), maskResId, options);</div><div class="line">            <span class="keyword">int</span> widthRatio = (<span class="keyword">int</span>)(options.outWidth * <span class="number">1f</span> / mWidth);</div><div class="line">            <span class="keyword">int</span> heightRatio = (<span class="keyword">int</span>)(options.outHeight * <span class="number">1f</span> / mHeight);</div><div class="line">            <span class="keyword">if</span> (widthRatio &gt; heightRatio) &#123;</div><div class="line">                options.inSampleSize = widthRatio;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                options.inSampleSize = heightRatio;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (options.inSampleSize == <span class="number">0</span>) &#123;</div><div class="line">                options.inSampleSize = <span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            options.inJustDecodeBounds = <span class="keyword">false</span>;</div><div class="line">            Bitmap maskBitmap = BitmapFactory.decodeResource(context.getResources(), maskResId, options);</div><div class="line">            originMaskPath = PathManager.getInstance().getPathFromBitmap(maskBitmap);</div><div class="line">            originMaskWidth = maskBitmap.getWidth();</div><div class="line">            originMaskHeight = maskBitmap.getHeight();</div><div class="line">            pi = <span class="keyword">new</span> PathInfo();</div><div class="line">            pi.height = originMaskHeight;</div><div class="line">            pi.width = originMaskWidth;</div><div class="line">            pi.path = originMaskPath;</div><div class="line">            PathManager.getInstance().addPathInfo(maskResId, pi);</div><div class="line">            maskBitmap.recycle();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>PathInfo：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PathInfo</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> Path path;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> width;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> height;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>然而我们看到，用户进行生成Bitmap－获取Path这一系列耗时、耗内存操作之前，先会判断缓存里是否已经有与该资源ID匹配的PathInfo， 如果有， 则不用进行这部分操作。如果没有，根据传入的资源ID，生成PathInfo对象，并存入缓存。同时，根据控件的宽高，对decode做了限制，预防了OOM 和 加载资源过大的问题。<br>关于这块缓存，下面会说明。</p>
+<p>再看onSizeChanged方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onSizeChanged</span><span class="params">(<span class="keyword">int</span> w, <span class="keyword">int</span> h, <span class="keyword">int</span> oldw, <span class="keyword">int</span> oldh)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onSizeChanged(w, h, oldw, oldh);</div><div class="line">    vHeight = getHeight();</div><div class="line">    vWidth = getWidth();</div><div class="line">    <span class="keyword">if</span> (originMaskPath != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">//scale the size of the path to fit the one of this View</span></div><div class="line">        Matrix matrix = <span class="keyword">new</span> Matrix();</div><div class="line">        matrix.setScale(vWidth * <span class="number">1f</span> / originMaskWidth, vHeight * <span class="number">1f</span> / originMaskHeight);</div><div class="line">        originMaskPath.transform(matrix, realMaskPath);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里的代码， 主要目的是对Path对象进行缩放， 已匹配控件的实际大小。可以看到， <strong>如果不希望展示的形状被拉伸或者变形， 那么AnyshapeImageView的宽高比， 最好和“遮罩”图片的宽高比保持一致。</strong></p>
+<p>接下来就是在onDraw里绘制形状并刷上图片了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == originMaskPath) &#123;</div><div class="line">        <span class="comment">// if the mask is null, the view will work as a normal ImageView</span></div><div class="line">        <span class="keyword">super</span>.onDraw(canvas);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (vWidth == <span class="number">0</span> || vHeight == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    paint.reset();</div><div class="line">    paint.setStyle(Paint.Style.STROKE);</div><div class="line">    <span class="comment">//get the drawable to show. if not set the src, will use  backColor</span></div><div class="line">    Drawable showDrawable = getDrawable();</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != showDrawable) &#123;</div><div class="line">        Bitmap showBitmap = ((BitmapDrawable) showDrawable).getBitmap();</div><div class="line">        Shader shader = <span class="keyword">new</span> BitmapShader(showBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);</div><div class="line">        Matrix shaderMatrix = <span class="keyword">new</span> Matrix();</div><div class="line">        <span class="keyword">float</span> scaleX = vWidth * <span class="number">1.0f</span> / showBitmap.getWidth();</div><div class="line">        <span class="keyword">float</span> scaleY = vHeight * <span class="number">1.0f</span> / showBitmap.getHeight();</div><div class="line">        shaderMatrix.setScale(scaleX, scaleY);</div><div class="line">        shader.setLocalMatrix(shaderMatrix);</div><div class="line">        paint.setShader(shader);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">//no src , use the backColor to fill the path</span></div><div class="line">        paint.setColor(backColor);</div><div class="line">    &#125;</div><div class="line">    canvas.drawPath(realMaskPath, paint);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h2><p>看了上面的博文， 各位一定清楚了，作为参数传入的资源ID，实际上只是为了获取一个Path对象。那么我们可以建立一个Integer－Path的映射关系， 用来缓存已经读取出来的Path。后面需要Path， 只需要通过资源ID去缓存里寻找即可，毕竟读取Path是一个费时间又费资源的操作。<br>这样看来，我们已经对AnyshapeImageView的使用进行了优化， 毕竟同一个形状的展示，我们只要执行一次从图片中解析Path对象的操作即可。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这个项目，是我花了将近一周时间断断续续完成的。代码不多， 也不复杂，希望能够帮到大家， 或者为大家提供一些思路。<br>再贴一下项目的地址， 包括demo在内：<br><a href="https://github.com/lankton/android-anyshape" target="_blank" rel="external">https://github.com/lankton/android-anyshape</a><br>如果你觉得这个项目，或者这篇博文对你起到了一些帮助，欢迎star支持一下～ </p>
+<h1 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h1><h2 id="2016-05-12"><a href="#2016-05-12" class="headerlink" title="2016-05-12"></a>2016-05-12</h2><p>优化了AnyshapeImageView解析遮罩的过程，PathManager中的createPaths（预先解析Path）变得繁琐且不必要，故删除。 简化后的使用可见<a href="https://github.com/lankton/android-anyshape/blob/master/README.md" target="_blank" rel="external">项目README</a>。<br>本次更新后对博文上面代码、讲解内容也有改动。</p>
+<h2 id="发布到JCenter-20160519"><a href="#发布到JCenter-20160519" class="headerlink" title="发布到JCenter-20160519"></a>发布到JCenter-20160519</h2><p>为方便使用，已将library发布到JCenter，开发者可以使用gradle或者maven进行依赖的配置。</p>
+<h3 id="gradle"><a href="#gradle" class="headerlink" title="gradle"></a>gradle</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile &apos;cn.lankton:anyshape:1.0.0&apos;</div></pre></td></tr></table></figure>
+<h3 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">  &lt;groupId&gt;cn.lankton&lt;/groupId&gt;</div><div class="line">  &lt;artifactId&gt;anyshape&lt;/artifactId&gt;</div><div class="line">  &lt;version&gt;1.0.0&lt;/version&gt;</div><div class="line">  &lt;type&gt;pom&lt;/type&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/09/【Android】自定义控件实现带百分比显示进度条，可自定义颜色/" rel="next" title="【Android】自定义控件实现带百分比显示进度条，可自定义颜色">
+                <i class="fa fa-chevron-left"></i> 【Android】自定义控件实现带百分比显示进度条，可自定义颜色
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/09/【Android】软引用-SoftReference-与LruCache/" rel="prev" title="【Android】软引用(SoftReference)与LruCache">
+                【Android】软引用(SoftReference)与LruCache <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/07/09/【Android】0行代码实现任意形状图片展示-android-anyshape/"
+     data-title="【Android】0行代码实现任意形状图片展示--android-anyshape"
+     data-content=""
+     data-url="http://lankton.github.io/2016/07/09/【Android】0行代码实现任意形状图片展示-android-anyshape/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/09/【Android】0行代码实现任意形状图片展示-android-anyshape/"
+           data-title="【Android】0行代码实现任意形状图片展示--android-anyshape" data-url="http://lankton.github.io/2016/07/09/【Android】0行代码实现任意形状图片展示-android-anyshape/">
+      <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name:"lan-github-page"};
+        (function() {
+          var ds = document.createElement('script');
+          ds.type = 'text/javascript';ds.async = true;
+          ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+          ds.charset = 'UTF-8';
+          (document.getElementsByTagName('head')[0] 
+           || document.getElementsByTagName('body')[0]).appendChild(ds);
+        })();
+        </script>
+      <!-- 多说公共JS代码 end -->
+
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://github.com/lankton/my_pictures/blob/master/site/header_limbo.jpg?raw=true"
+               alt="Lan" />
+          <p class="site-author-name" itemprop="name">Lan</p>
+          <p class="site-description motion-element" itemprop="description">少年你死了</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lankton" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lankton" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#展示"><span class="nav-number">2.</span> <span class="nav-text">展示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现"><span class="nav-number">4.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#从Bitmap中提取Path"><span class="nav-number">4.1.</span> <span class="nav-text">从Bitmap中提取Path</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过Path，显示图像"><span class="nav-number">4.2.</span> <span class="nav-text">通过Path，显示图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存"><span class="nav-number">4.3.</span> <span class="nav-text">缓存</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更新"><span class="nav-number">6.</span> <span class="nav-text">更新</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2016-05-12"><span class="nav-number">6.1.</span> <span class="nav-text">2016-05-12</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发布到JCenter-20160519"><span class="nav-number">6.2.</span> <span class="nav-text">发布到JCenter-20160519</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gradle"><span class="nav-number">6.2.1.</span> <span class="nav-text">gradle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#maven"><span class="nav-number">6.2.2.</span> <span class="nav-text">maven</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lan</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lan-github-page"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("hvgPMqDAu4yXLMv9yLUwv7Dl-gzGzoHsz", "D1RnAFtHOTnG8FyFwL7jthBW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

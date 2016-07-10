@@ -10,10 +10,10 @@ tags:
 可以肯定是可以，但是我觉得， 最好还是不要这么做。。于是我有了一个想法， **用一张图片， 告诉控件，我想要什么样的形状， 然后控件自动按照这个形状， 帮我把图片显示出来**。于是有了这个项目－－[android-anyshape](https://github.com/lankton/android-anyshape)。
 
 # 展示
-<img src="http://img.blog.csdn.net/20160327163538291" width="200px"/>&nbsp;&nbsp;&nbsp;<img src="http://img.blog.csdn.net/20160327163638432" width="200px"/>
+<img src="http://img.blog.csdn.net/20160327163538291" width="200px"/>&nbsp;&nbsp;&nbsp;<img src="http://img.blog.csdn.net/20160327163638432" width="200px"/>  
 左边是使用了普通ImageView的展示效果， 右边是使用了项目中AnyshapeImageView的效果。想使用AnyshapeImageView达到右边的样式， 仅需提供三张遮罩图片，通过"anyshapeMask"参数提供给控件即可（下文会说明）。
-三张“遮罩”图片如下：
-<img src="http://img.blog.csdn.net/20160327164339919" height="100px"/>&nbsp;&nbsp;&nbsp;<img src="http://img.blog.csdn.net/20160327175945131" height="100px"/>&nbsp;&nbsp;&nbsp;<img src="http://img.blog.csdn.net/20160327180054263" height="100px"/>
+三张“遮罩”图片如下：  
+<img src="http://img.blog.csdn.net/20160327164339919" width="150px"/>&nbsp;&nbsp;&nbsp;<img src="http://img.blog.csdn.net/20160327175945131" width="150px"/>&nbsp;&nbsp;&nbsp;<img src="http://img.blog.csdn.net/20160327180054263" width="150px"/>  
 与普通的遮罩图片不同， 这里要求**图片的背景完全透明， 即alpha通道的值为0， 而需要显示的图形，对具体的颜色没有任何要求，不透明即可**。
 # 使用
 控件的使用很简单， 由于继承ImageView， 所以使用方法类似于ImageView，但多了一个重要的自定义参数：anyshapeMask

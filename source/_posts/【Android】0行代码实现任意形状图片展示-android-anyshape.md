@@ -211,16 +211,19 @@ protected void onDraw(Canvas canvas) {
 本次更新后对博文上面代码、讲解内容也有改动。
 ## 发布到JCenter-20160519
 为方便使用，已将library发布到JCenter，开发者可以使用gradle或者maven进行依赖的配置。
+###latest version
+可见[项目README](https://github.com/lankton/android-anyshape/blob/master/README.md)头部图标
+
 ### gradle
 ```
-compile 'cn.lankton:anyshape:1.0.0'
+compile 'cn.lankton:anyshape:latest version'
 ```
 ### maven
 ```
 <dependency>
   <groupId>cn.lankton</groupId>
   <artifactId>anyshape</artifactId>
-  <version>1.0.0</version>
+  <version>latest version</version>
   <type>pom</type>
 </dependency>
 ```

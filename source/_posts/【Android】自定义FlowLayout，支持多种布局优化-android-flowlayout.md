@@ -264,17 +264,19 @@ class BlankView extends View {
 
 # 更新
 ## 发布到JCenter-20160519
-为方便使用，已将library发布到JCenter，开发者可以使用gradle或者maven进行依赖的配置。
+为方便使用，已将library发布到JCenter，开发者可以使用gradle或者maven进行依赖的配置。 
+### latest version
+见[项目README](https://github.com/lankton/android-flowlayout/blob/master/README.md)头部图标。
 ### gradle
 ```
-compile 'cn.lankton:flowlayout:1.0.1'
+compile 'cn.lankton:flowlayout:latest version'
 ```
 ### maven
 ```
 <dependency>
   <groupId>cn.lankton</groupId>
   <artifactId>flowlayout</artifactId>
-  <version>1.0.1</version>
+  <version>latest version</version>
   <type>pom</type>
 </dependency>
 ```

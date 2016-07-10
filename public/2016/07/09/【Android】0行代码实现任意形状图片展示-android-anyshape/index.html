@@ -95,7 +95,7 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20160327164339919">
 <meta property="og:image" content="http://img.blog.csdn.net/20160327175945131">
 <meta property="og:image" content="http://img.blog.csdn.net/20160327180054263">
-<meta property="og:updated_time" content="2016-07-09T15:20:44.000Z">
+<meta property="og:updated_time" content="2016-07-10T07:51:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【Android】0行代码实现任意形状图片展示--android-anyshape">
 <meta name="twitter:description" content="前言在Android开发中， 我们经常会遇到一些场景， 需要以一些特殊的形状显示图片， 比如圆角矩形、圆形等等。关于如何绘制这类形状， 网上已经有很多的方案，比如自定义控件重写onDraw方法， 通过canvas的各种draw方法进行绘制等。那么， 更复杂的图形呢？比如，五角星？比如组合图形？又或者是各种奇奇怪怪的不规则图形呢？有同学会说， 如果已知不规则图形的具体形状， 那我们就可以通过连接顶点">
@@ -384,8 +384,9 @@
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这个项目，是我花了将近一周时间断断续续完成的。代码不多， 也不复杂，希望能够帮到大家， 或者为大家提供一些思路。<br>再贴一下项目的地址， 包括demo在内：<br><a href="https://github.com/lankton/android-anyshape" target="_blank" rel="external">https://github.com/lankton/android-anyshape</a><br>如果你觉得这个项目，或者这篇博文对你起到了一些帮助，欢迎star支持一下～ </p>
 <h1 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h1><h2 id="2016-05-12"><a href="#2016-05-12" class="headerlink" title="2016-05-12"></a>2016-05-12</h2><p>优化了AnyshapeImageView解析遮罩的过程，PathManager中的createPaths（预先解析Path）变得繁琐且不必要，故删除。 简化后的使用可见<a href="https://github.com/lankton/android-anyshape/blob/master/README.md" target="_blank" rel="external">项目README</a>。<br>本次更新后对博文上面代码、讲解内容也有改动。</p>
 <h2 id="发布到JCenter-20160519"><a href="#发布到JCenter-20160519" class="headerlink" title="发布到JCenter-20160519"></a>发布到JCenter-20160519</h2><p>为方便使用，已将library发布到JCenter，开发者可以使用gradle或者maven进行依赖的配置。</p>
-<h3 id="gradle"><a href="#gradle" class="headerlink" title="gradle"></a>gradle</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile &apos;cn.lankton:anyshape:1.0.0&apos;</div></pre></td></tr></table></figure>
-<h3 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">  &lt;groupId&gt;cn.lankton&lt;/groupId&gt;</div><div class="line">  &lt;artifactId&gt;anyshape&lt;/artifactId&gt;</div><div class="line">  &lt;version&gt;1.0.0&lt;/version&gt;</div><div class="line">  &lt;type&gt;pom&lt;/type&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<p>###latest version<br>可见<a href="https://github.com/lankton/android-anyshape/blob/master/README.md" target="_blank" rel="external">项目README</a>头部图标</p>
+<h3 id="gradle"><a href="#gradle" class="headerlink" title="gradle"></a>gradle</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile &apos;cn.lankton:anyshape:latest version&apos;</div></pre></td></tr></table></figure>
+<h3 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">  &lt;groupId&gt;cn.lankton&lt;/groupId&gt;</div><div class="line">  &lt;artifactId&gt;anyshape&lt;/artifactId&gt;</div><div class="line">  &lt;version&gt;latest version&lt;/version&gt;</div><div class="line">  &lt;type&gt;pom&lt;/type&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
 
       
     </div>
